@@ -14,14 +14,12 @@ let package = Package(
     ],
     targets: [
         // Explicit C module wrapper
-        .target(
+        .systemLibrary(
             name: "zen_uniffiFFI",
-            path: "Sources/zen_uniffiFFI",
-            sources: [],  // No source files to compile - header only
-            publicHeadersPath: "."
+            path: "Sources/zen_uniffiFFI"
         ),
 
-        // Swift wrapper that uses the C module
+        // Swift layer
         .target(
             name: "ZenUniffi",
             dependencies: ["zen_uniffiFFI", "ZenUniffiBinary"],
