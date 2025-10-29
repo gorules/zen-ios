@@ -9,14 +9,18 @@ let package = Package(
     products: [
         .library(
             name: "ZenUniffi",
-            targets: ["ZenUniffiWrapper"]
+            targets: ["ZenUniffi"]
         )
     ],
     targets: [
         .target(
-            name: "ZenUniffiWrapper",
+            name: "ZenUniffi",
             dependencies: ["ZenUniffiBinary"],
-            path: "Sources"
+            path: "Sources/ZenUniffi",
+            publicHeadersPath: "include",
+            cSettings: [
+                .headerSearchPath("include")
+            ]
         ),
         .binaryTarget(
             name: "ZenUniffiBinary",
