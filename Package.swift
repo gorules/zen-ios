@@ -14,13 +14,14 @@ let package = Package(
     ],
     targets: [
         .target(
+            name: "zen_uniffiFFI",
+            path: "Sources/zen_uniffiFFI",
+            publicHeadersPath: "."
+        ),
+        .target(
             name: "ZenUniffi",
-            dependencies: ["ZenUniffiBinary"],
-            path: "Sources/ZenUniffi",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("include")
-            ]
+            dependencies: ["zen_uniffiFFI", "ZenUniffiBinary"],
+            path: "Sources/ZenUniffi"
         ),
         .binaryTarget(
             name: "ZenUniffiBinary",
