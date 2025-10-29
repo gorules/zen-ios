@@ -9,22 +9,12 @@ let package = Package(
     products: [
         .library(
             name: "ZenUniffi",
-            targets: ["ZenUniffi"]
+            targets: ["ZenUniffi"]  // ← Same name
         )
     ],
     targets: [
-        .target(
-            name: "zen_uniffiFFI",
-            path: "Sources/zen_uniffiFFI",
-            publicHeadersPath: "."
-        ),
-        .target(
-            name: "ZenUniffi",
-            dependencies: ["zen_uniffiFFI", "ZenUniffiBinary"],
-            path: "Sources/ZenUniffi"
-        ),
         .binaryTarget(
-            name: "ZenUniffiBinary",
+            name: "ZenUniffi",  // ← Same name as product
             path: "ZenUniffi.xcframework"
         )
     ]
