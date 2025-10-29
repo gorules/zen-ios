@@ -17,6 +17,7 @@ let package = Package(
             name: "ZenUniffi",
             dependencies: ["ZenUniffiBinary"],
             path: "Sources/ZenUniffi",
+            exclude: ["include/zen_uniffiFFI.modulemap"],
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("include")
