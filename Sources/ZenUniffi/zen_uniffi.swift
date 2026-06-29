@@ -1179,11 +1179,15 @@ public func FfiConverterTypeDecisionNode_lower(_ value: DecisionNode) -> RustBuf
 
 public struct ZenConfig {
     public var nodesInContext: Bool?
+    public var functionTimeoutMillis: UInt32?
+    public var httpAuth: Bool?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(nodesInContext: Bool?) {
+    public init(nodesInContext: Bool?, functionTimeoutMillis: UInt32?, httpAuth: Bool?) {
         self.nodesInContext = nodesInContext
+        self.functionTimeoutMillis = functionTimeoutMillis
+        self.httpAuth = httpAuth
     }
 }
 
@@ -1197,11 +1201,19 @@ extension ZenConfig: Equatable, Hashable {
         if lhs.nodesInContext != rhs.nodesInContext {
             return false
         }
+        if lhs.functionTimeoutMillis != rhs.functionTimeoutMillis {
+            return false
+        }
+        if lhs.httpAuth != rhs.httpAuth {
+            return false
+        }
         return true
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(nodesInContext)
+        hasher.combine(functionTimeoutMillis)
+        hasher.combine(httpAuth)
     }
 }
 
@@ -1214,12 +1226,16 @@ public struct FfiConverterTypeZenConfig: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ZenConfig {
         return
             try ZenConfig(
-                nodesInContext: FfiConverterOptionBool.read(from: &buf)
+                nodesInContext: FfiConverterOptionBool.read(from: &buf), 
+                functionTimeoutMillis: FfiConverterOptionUInt32.read(from: &buf), 
+                httpAuth: FfiConverterOptionBool.read(from: &buf)
         )
     }
 
     public static func write(_ value: ZenConfig, into buf: inout [UInt8]) {
         FfiConverterOptionBool.write(value.nodesInContext, into: &buf)
+        FfiConverterOptionUInt32.write(value.functionTimeoutMillis, into: &buf)
+        FfiConverterOptionBool.write(value.httpAuth, into: &buf)
     }
 }
 
@@ -2097,6 +2113,30 @@ fileprivate struct FfiConverterOptionUInt8: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterUInt8.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionUInt32: FfiConverterRustBuffer {
+    typealias SwiftType = UInt32?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterUInt32.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterUInt32.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
