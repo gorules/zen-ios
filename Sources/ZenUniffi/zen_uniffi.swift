@@ -661,11 +661,215 @@ public func FfiConverterTypeZenDecision_lower(_ value: ZenDecision) -> UnsafeMut
 
 
 
+public protocol ZenDecisionLoaderCallback: AnyObject, Sendable {
+    
+    func load(key: String) async throws  -> JsonBuffer?
+    
+}
+open class ZenDecisionLoaderCallbackImpl: ZenDecisionLoaderCallback, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_zen_uniffi_fn_clone_zendecisionloadercallback(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_zen_uniffi_fn_free_zendecisionloadercallback(pointer, $0) }
+    }
+
+    
+
+    
+open func load(key: String)async throws  -> JsonBuffer?  {
+    return
+        try  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_zen_uniffi_fn_method_zendecisionloadercallback_load(
+                    self.uniffiClonePointer(),
+                    FfiConverterString.lower(key)
+                )
+            },
+            pollFunc: ffi_zen_uniffi_rust_future_poll_rust_buffer,
+            completeFunc: ffi_zen_uniffi_rust_future_complete_rust_buffer,
+            freeFunc: ffi_zen_uniffi_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterOptionTypeJsonBuffer.lift,
+            errorHandler: FfiConverterTypeZenError_lift
+        )
+}
+    
+
+}
+
+
+// Put the implementation in a struct so we don't pollute the top-level namespace
+fileprivate struct UniffiCallbackInterfaceZenDecisionLoaderCallback {
+
+    // Create the VTable using a series of closures.
+    // Swift automatically converts these into C callback functions.
+    //
+    // This creates 1-element array, since this seems to be the only way to construct a const
+    // pointer that we can pass to the Rust code.
+    static let vtable: [UniffiVTableCallbackInterfaceZenDecisionLoaderCallback] = [UniffiVTableCallbackInterfaceZenDecisionLoaderCallback(
+        load: { (
+            uniffiHandle: UInt64,
+            key: RustBuffer,
+            uniffiFutureCallback: @escaping UniffiForeignFutureCompleteRustBuffer,
+            uniffiCallbackData: UInt64,
+            uniffiOutReturn: UnsafeMutablePointer<UniffiForeignFuture>
+        ) in
+            let makeCall = {
+                () async throws -> JsonBuffer? in
+                guard let uniffiObj = try? FfiConverterTypeZenDecisionLoaderCallback.handleMap.get(handle: uniffiHandle) else {
+                    throw UniffiInternalError.unexpectedStaleHandle
+                }
+                return try await uniffiObj.load(
+                     key: try FfiConverterString.lift(key)
+                )
+            }
+
+            let uniffiHandleSuccess = { (returnValue: JsonBuffer?) in
+                uniffiFutureCallback(
+                    uniffiCallbackData,
+                    UniffiForeignFutureStructRustBuffer(
+                        returnValue: FfiConverterOptionTypeJsonBuffer.lower(returnValue),
+                        callStatus: RustCallStatus()
+                    )
+                )
+            }
+            let uniffiHandleError = { (statusCode, errorBuf) in
+                uniffiFutureCallback(
+                    uniffiCallbackData,
+                    UniffiForeignFutureStructRustBuffer(
+                        returnValue: RustBuffer.empty(),
+                        callStatus: RustCallStatus(code: statusCode, errorBuf: errorBuf)
+                    )
+                )
+            }
+            let uniffiForeignFuture = uniffiTraitInterfaceCallAsyncWithError(
+                makeCall: makeCall,
+                handleSuccess: uniffiHandleSuccess,
+                handleError: uniffiHandleError,
+                lowerError: FfiConverterTypeZenError_lower
+            )
+            uniffiOutReturn.pointee = uniffiForeignFuture
+        },
+        uniffiFree: { (uniffiHandle: UInt64) -> () in
+            let result = try? FfiConverterTypeZenDecisionLoaderCallback.handleMap.remove(handle: uniffiHandle)
+            if result == nil {
+                print("Uniffi callback interface ZenDecisionLoaderCallback: handle missing in uniffiFree")
+            }
+        }
+    )]
+}
+
+private func uniffiCallbackInitZenDecisionLoaderCallback() {
+    uniffi_zen_uniffi_fn_init_callback_vtable_zendecisionloadercallback(UniffiCallbackInterfaceZenDecisionLoaderCallback.vtable)
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeZenDecisionLoaderCallback: FfiConverter {
+    fileprivate static let handleMap = UniffiHandleMap<ZenDecisionLoaderCallback>()
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = ZenDecisionLoaderCallback
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> ZenDecisionLoaderCallback {
+        return ZenDecisionLoaderCallbackImpl(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: ZenDecisionLoaderCallback) -> UnsafeMutableRawPointer {
+        guard let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: handleMap.insert(obj: value))) else {
+            fatalError("Cast to UnsafeMutableRawPointer failed")
+        }
+        return ptr
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ZenDecisionLoaderCallback {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: ZenDecisionLoaderCallback, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeZenDecisionLoaderCallback_lift(_ pointer: UnsafeMutableRawPointer) throws -> ZenDecisionLoaderCallback {
+    return try FfiConverterTypeZenDecisionLoaderCallback.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeZenDecisionLoaderCallback_lower(_ value: ZenDecisionLoaderCallback) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeZenDecisionLoaderCallback.lower(value)
+}
+
+
+
+
+
+
 public protocol ZenEngineProtocol: AnyObject, Sendable {
     
     func createDecision(content: JsonBuffer) throws  -> ZenDecision
     
     func evaluate(key: String, context: JsonBuffer, options: ZenEvaluateOptions?) async throws  -> ZenEngineResponse
+    
+    func evaluateBatch(requests: [ZenBatchRequest], options: ZenEvaluateOptions?) async  -> [ZenBatchResult]
     
     func getDecision(key: String) async throws  -> ZenDecision
     
@@ -709,11 +913,11 @@ open class ZenEngine: ZenEngineProtocol, @unchecked Sendable {
     public func uniffiClonePointer() -> UnsafeMutableRawPointer {
         return try! rustCall { uniffi_zen_uniffi_fn_clone_zenengine(self.pointer, $0) }
     }
-public convenience init(loader: ZenDecisionLoaderCallback?, customNode: ZenCustomNodeCallback?) {
+public convenience init(loader: ZenLoader? = nil, customNode: ZenCustomNodeCallback? = nil)throws  {
     let pointer =
-        try! rustCall() {
+        try rustCallWithError(FfiConverterTypeZenError_lift) {
     uniffi_zen_uniffi_fn_constructor_zenengine_new(
-        FfiConverterOptionCallbackInterfaceZenDecisionLoaderCallback.lower(loader),
+        FfiConverterOptionTypeZenLoader.lower(loader),
         FfiConverterOptionCallbackInterfaceZenCustomNodeCallback.lower(customNode),$0
     )
 }
@@ -753,6 +957,24 @@ open func evaluate(key: String, context: JsonBuffer, options: ZenEvaluateOptions
             freeFunc: ffi_zen_uniffi_rust_future_free_rust_buffer,
             liftFunc: FfiConverterTypeZenEngineResponse_lift,
             errorHandler: FfiConverterTypeZenError_lift
+        )
+}
+    
+open func evaluateBatch(requests: [ZenBatchRequest], options: ZenEvaluateOptions?)async  -> [ZenBatchResult]  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_zen_uniffi_fn_method_zenengine_evaluate_batch(
+                    self.uniffiClonePointer(),
+                    FfiConverterSequenceTypeZenBatchRequest.lower(requests),FfiConverterOptionTypeZenEvaluateOptions.lower(options)
+                )
+            },
+            pollFunc: ffi_zen_uniffi_rust_future_poll_rust_buffer,
+            completeFunc: ffi_zen_uniffi_rust_future_complete_rust_buffer,
+            freeFunc: ffi_zen_uniffi_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterSequenceTypeZenBatchResult.lift,
+            errorHandler: nil
+            
         )
 }
     
@@ -1177,13 +1399,165 @@ public func FfiConverterTypeDecisionNode_lower(_ value: DecisionNode) -> RustBuf
 }
 
 
-public struct ZenConfig {
-    public var nodesInContext: Bool?
+public struct ZenBatchRequest {
+    public var key: String
+    public var context: JsonBuffer
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(nodesInContext: Bool?) {
+    public init(key: String, context: JsonBuffer) {
+        self.key = key
+        self.context = context
+    }
+}
+
+#if compiler(>=6)
+extension ZenBatchRequest: Sendable {}
+#endif
+
+
+extension ZenBatchRequest: Equatable, Hashable {
+    public static func ==(lhs: ZenBatchRequest, rhs: ZenBatchRequest) -> Bool {
+        if lhs.key != rhs.key {
+            return false
+        }
+        if lhs.context != rhs.context {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(key)
+        hasher.combine(context)
+    }
+}
+
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeZenBatchRequest: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ZenBatchRequest {
+        return
+            try ZenBatchRequest(
+                key: FfiConverterString.read(from: &buf), 
+                context: FfiConverterTypeJsonBuffer.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ZenBatchRequest, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.key, into: &buf)
+        FfiConverterTypeJsonBuffer.write(value.context, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeZenBatchRequest_lift(_ buf: RustBuffer) throws -> ZenBatchRequest {
+    return try FfiConverterTypeZenBatchRequest.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeZenBatchRequest_lower(_ value: ZenBatchRequest) -> RustBuffer {
+    return FfiConverterTypeZenBatchRequest.lower(value)
+}
+
+
+public struct ZenBatchResult {
+    public var success: Bool
+    public var data: ZenEngineResponse?
+    public var error: String?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(success: Bool, data: ZenEngineResponse?, error: String?) {
+        self.success = success
+        self.data = data
+        self.error = error
+    }
+}
+
+#if compiler(>=6)
+extension ZenBatchResult: Sendable {}
+#endif
+
+
+extension ZenBatchResult: Equatable, Hashable {
+    public static func ==(lhs: ZenBatchResult, rhs: ZenBatchResult) -> Bool {
+        if lhs.success != rhs.success {
+            return false
+        }
+        if lhs.data != rhs.data {
+            return false
+        }
+        if lhs.error != rhs.error {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(success)
+        hasher.combine(data)
+        hasher.combine(error)
+    }
+}
+
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeZenBatchResult: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ZenBatchResult {
+        return
+            try ZenBatchResult(
+                success: FfiConverterBool.read(from: &buf), 
+                data: FfiConverterOptionTypeZenEngineResponse.read(from: &buf), 
+                error: FfiConverterOptionString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ZenBatchResult, into buf: inout [UInt8]) {
+        FfiConverterBool.write(value.success, into: &buf)
+        FfiConverterOptionTypeZenEngineResponse.write(value.data, into: &buf)
+        FfiConverterOptionString.write(value.error, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeZenBatchResult_lift(_ buf: RustBuffer) throws -> ZenBatchResult {
+    return try FfiConverterTypeZenBatchResult.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeZenBatchResult_lower(_ value: ZenBatchResult) -> RustBuffer {
+    return FfiConverterTypeZenBatchResult.lower(value)
+}
+
+
+public struct ZenConfig {
+    public var nodesInContext: Bool?
+    public var functionTimeoutMillis: UInt32?
+    public var httpAuth: Bool?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(nodesInContext: Bool?, functionTimeoutMillis: UInt32?, httpAuth: Bool?) {
         self.nodesInContext = nodesInContext
+        self.functionTimeoutMillis = functionTimeoutMillis
+        self.httpAuth = httpAuth
     }
 }
 
@@ -1197,11 +1571,19 @@ extension ZenConfig: Equatable, Hashable {
         if lhs.nodesInContext != rhs.nodesInContext {
             return false
         }
+        if lhs.functionTimeoutMillis != rhs.functionTimeoutMillis {
+            return false
+        }
+        if lhs.httpAuth != rhs.httpAuth {
+            return false
+        }
         return true
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(nodesInContext)
+        hasher.combine(functionTimeoutMillis)
+        hasher.combine(httpAuth)
     }
 }
 
@@ -1214,12 +1596,16 @@ public struct FfiConverterTypeZenConfig: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ZenConfig {
         return
             try ZenConfig(
-                nodesInContext: FfiConverterOptionBool.read(from: &buf)
+                nodesInContext: FfiConverterOptionBool.read(from: &buf), 
+                functionTimeoutMillis: FfiConverterOptionUInt32.read(from: &buf), 
+                httpAuth: FfiConverterOptionBool.read(from: &buf)
         )
     }
 
     public static func write(_ value: ZenConfig, into buf: inout [UInt8]) {
         FfiConverterOptionBool.write(value.nodesInContext, into: &buf)
+        FfiConverterOptionUInt32.write(value.functionTimeoutMillis, into: &buf)
+        FfiConverterOptionBool.write(value.httpAuth, into: &buf)
     }
 }
 
@@ -1808,6 +2194,99 @@ extension ZenError: Foundation.LocalizedError {
 
 
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum ZenLoader {
+    
+    case callback(callback: ZenDecisionLoaderCallback
+    )
+    case `static`(content: [String: JsonBuffer]
+    )
+    case filesystem(path: String
+    )
+    case zip(bytes: Data
+    )
+}
+
+
+#if compiler(>=6)
+extension ZenLoader: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeZenLoader: FfiConverterRustBuffer {
+    typealias SwiftType = ZenLoader
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ZenLoader {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .callback(callback: try FfiConverterTypeZenDecisionLoaderCallback.read(from: &buf)
+        )
+        
+        case 2: return .`static`(content: try FfiConverterDictionaryStringTypeJsonBuffer.read(from: &buf)
+        )
+        
+        case 3: return .filesystem(path: try FfiConverterString.read(from: &buf)
+        )
+        
+        case 4: return .zip(bytes: try FfiConverterData.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ZenLoader, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case let .callback(callback):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeZenDecisionLoaderCallback.write(callback, into: &buf)
+            
+        
+        case let .`static`(content):
+            writeInt(&buf, Int32(2))
+            FfiConverterDictionaryStringTypeJsonBuffer.write(content, into: &buf)
+            
+        
+        case let .filesystem(path):
+            writeInt(&buf, Int32(3))
+            FfiConverterString.write(path, into: &buf)
+            
+        
+        case let .zip(bytes):
+            writeInt(&buf, Int32(4))
+            FfiConverterData.write(bytes, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeZenLoader_lift(_ buf: RustBuffer) throws -> ZenLoader {
+    return try FfiConverterTypeZenLoader.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeZenLoader_lower(_ value: ZenLoader) -> RustBuffer {
+    return FfiConverterTypeZenLoader.lower(value)
+}
+
+
+
+
+
+
 
 
 
@@ -1943,141 +2422,6 @@ public func FfiConverterCallbackInterfaceZenCustomNodeCallback_lower(_ v: ZenCus
     return FfiConverterCallbackInterfaceZenCustomNodeCallback.lower(v)
 }
 
-
-
-
-public protocol ZenDecisionLoaderCallback: AnyObject, Sendable {
-    
-    func load(key: String) async throws  -> JsonBuffer?
-    
-}
-
-
-// Put the implementation in a struct so we don't pollute the top-level namespace
-fileprivate struct UniffiCallbackInterfaceZenDecisionLoaderCallback {
-
-    // Create the VTable using a series of closures.
-    // Swift automatically converts these into C callback functions.
-    //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceZenDecisionLoaderCallback] = [UniffiVTableCallbackInterfaceZenDecisionLoaderCallback(
-        load: { (
-            uniffiHandle: UInt64,
-            key: RustBuffer,
-            uniffiFutureCallback: @escaping UniffiForeignFutureCompleteRustBuffer,
-            uniffiCallbackData: UInt64,
-            uniffiOutReturn: UnsafeMutablePointer<UniffiForeignFuture>
-        ) in
-            let makeCall = {
-                () async throws -> JsonBuffer? in
-                guard let uniffiObj = try? FfiConverterCallbackInterfaceZenDecisionLoaderCallback.handleMap.get(handle: uniffiHandle) else {
-                    throw UniffiInternalError.unexpectedStaleHandle
-                }
-                return try await uniffiObj.load(
-                     key: try FfiConverterString.lift(key)
-                )
-            }
-
-            let uniffiHandleSuccess = { (returnValue: JsonBuffer?) in
-                uniffiFutureCallback(
-                    uniffiCallbackData,
-                    UniffiForeignFutureStructRustBuffer(
-                        returnValue: FfiConverterOptionTypeJsonBuffer.lower(returnValue),
-                        callStatus: RustCallStatus()
-                    )
-                )
-            }
-            let uniffiHandleError = { (statusCode, errorBuf) in
-                uniffiFutureCallback(
-                    uniffiCallbackData,
-                    UniffiForeignFutureStructRustBuffer(
-                        returnValue: RustBuffer.empty(),
-                        callStatus: RustCallStatus(code: statusCode, errorBuf: errorBuf)
-                    )
-                )
-            }
-            let uniffiForeignFuture = uniffiTraitInterfaceCallAsyncWithError(
-                makeCall: makeCall,
-                handleSuccess: uniffiHandleSuccess,
-                handleError: uniffiHandleError,
-                lowerError: FfiConverterTypeZenError_lower
-            )
-            uniffiOutReturn.pointee = uniffiForeignFuture
-        },
-        uniffiFree: { (uniffiHandle: UInt64) -> () in
-            let result = try? FfiConverterCallbackInterfaceZenDecisionLoaderCallback.handleMap.remove(handle: uniffiHandle)
-            if result == nil {
-                print("Uniffi callback interface ZenDecisionLoaderCallback: handle missing in uniffiFree")
-            }
-        }
-    )]
-}
-
-private func uniffiCallbackInitZenDecisionLoaderCallback() {
-    uniffi_zen_uniffi_fn_init_callback_vtable_zendecisionloadercallback(UniffiCallbackInterfaceZenDecisionLoaderCallback.vtable)
-}
-
-// FfiConverter protocol for callback interfaces
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-fileprivate struct FfiConverterCallbackInterfaceZenDecisionLoaderCallback {
-    fileprivate static let handleMap = UniffiHandleMap<ZenDecisionLoaderCallback>()
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-extension FfiConverterCallbackInterfaceZenDecisionLoaderCallback : FfiConverter {
-    typealias SwiftType = ZenDecisionLoaderCallback
-    typealias FfiType = UInt64
-
-#if swift(>=5.8)
-    @_documentation(visibility: private)
-#endif
-    public static func lift(_ handle: UInt64) throws -> SwiftType {
-        try handleMap.get(handle: handle)
-    }
-
-#if swift(>=5.8)
-    @_documentation(visibility: private)
-#endif
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        let handle: UInt64 = try readInt(&buf)
-        return try lift(handle)
-    }
-
-#if swift(>=5.8)
-    @_documentation(visibility: private)
-#endif
-    public static func lower(_ v: SwiftType) -> UInt64 {
-        return handleMap.insert(obj: v)
-    }
-
-#if swift(>=5.8)
-    @_documentation(visibility: private)
-#endif
-    public static func write(_ v: SwiftType, into buf: inout [UInt8]) {
-        writeInt(&buf, lower(v))
-    }
-}
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterCallbackInterfaceZenDecisionLoaderCallback_lift(_ handle: UInt64) throws -> ZenDecisionLoaderCallback {
-    return try FfiConverterCallbackInterfaceZenDecisionLoaderCallback.lift(handle)
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterCallbackInterfaceZenDecisionLoaderCallback_lower(_ v: ZenDecisionLoaderCallback) -> UInt64 {
-    return FfiConverterCallbackInterfaceZenDecisionLoaderCallback.lower(v)
-}
-
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
@@ -2097,6 +2441,30 @@ fileprivate struct FfiConverterOptionUInt8: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterUInt8.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionUInt32: FfiConverterRustBuffer {
+    typealias SwiftType = UInt32?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterUInt32.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterUInt32.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -2153,6 +2521,30 @@ fileprivate struct FfiConverterOptionString: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeZenEngineResponse: FfiConverterRustBuffer {
+    typealias SwiftType = ZenEngineResponse?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeZenEngineResponse.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeZenEngineResponse.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeZenEvaluateOptions: FfiConverterRustBuffer {
     typealias SwiftType = ZenEvaluateOptions?
 
@@ -2177,6 +2569,30 @@ fileprivate struct FfiConverterOptionTypeZenEvaluateOptions: FfiConverterRustBuf
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeZenLoader: FfiConverterRustBuffer {
+    typealias SwiftType = ZenLoader?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeZenLoader.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeZenLoader.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionCallbackInterfaceZenCustomNodeCallback: FfiConverterRustBuffer {
     typealias SwiftType = ZenCustomNodeCallback?
 
@@ -2193,30 +2609,6 @@ fileprivate struct FfiConverterOptionCallbackInterfaceZenCustomNodeCallback: Ffi
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterCallbackInterfaceZenCustomNodeCallback.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-fileprivate struct FfiConverterOptionCallbackInterfaceZenDecisionLoaderCallback: FfiConverterRustBuffer {
-    typealias SwiftType = ZenDecisionLoaderCallback?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterCallbackInterfaceZenDecisionLoaderCallback.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterCallbackInterfaceZenDecisionLoaderCallback.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -2273,6 +2665,56 @@ fileprivate struct FfiConverterOptionTypeJsonBuffer: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterSequenceTypeZenBatchRequest: FfiConverterRustBuffer {
+    typealias SwiftType = [ZenBatchRequest]
+
+    public static func write(_ value: [ZenBatchRequest], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeZenBatchRequest.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [ZenBatchRequest] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [ZenBatchRequest]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeZenBatchRequest.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterSequenceTypeZenBatchResult: FfiConverterRustBuffer {
+    typealias SwiftType = [ZenBatchResult]
+
+    public static func write(_ value: [ZenBatchResult], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeZenBatchResult.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [ZenBatchResult] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [ZenBatchResult]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeZenBatchResult.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterDictionaryStringTypeZenEngineTrace: FfiConverterRustBuffer {
     public static func write(_ value: [String: ZenEngineTrace], into buf: inout [UInt8]) {
         let len = Int32(value.count)
@@ -2290,6 +2732,32 @@ fileprivate struct FfiConverterDictionaryStringTypeZenEngineTrace: FfiConverterR
         for _ in 0..<len {
             let key = try FfiConverterString.read(from: &buf)
             let value = try FfiConverterTypeZenEngineTrace.read(from: &buf)
+            dict[key] = value
+        }
+        return dict
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterDictionaryStringTypeJsonBuffer: FfiConverterRustBuffer {
+    public static func write(_ value: [String: JsonBuffer], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for (key, value) in value {
+            FfiConverterString.write(key, into: &buf)
+            FfiConverterTypeJsonBuffer.write(value, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [String: JsonBuffer] {
+        let len: Int32 = try readInt(&buf)
+        var dict = [String: JsonBuffer]()
+        dict.reserveCapacity(Int(len))
+        for _ in 0..<len {
+            let key = try FfiConverterString.read(from: &buf)
+            let value = try FfiConverterTypeJsonBuffer.read(from: &buf)
             dict[key] = value
         }
         return dict
@@ -2521,10 +2989,16 @@ private let initializationResult: InitializationResult = {
     if (uniffi_zen_uniffi_checksum_method_zendecision_validate() != 18546) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_zen_uniffi_checksum_method_zendecisionloadercallback_load() != 42929) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_zen_uniffi_checksum_method_zenengine_create_decision() != 62504) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_zen_uniffi_checksum_method_zenengine_evaluate() != 59161) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_zen_uniffi_checksum_method_zenengine_evaluate_batch() != 62143) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_zen_uniffi_checksum_method_zenengine_get_decision() != 30326) {
@@ -2536,7 +3010,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_zen_uniffi_checksum_method_zenexpressionunary_evaluate() != 54979) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_zen_uniffi_checksum_constructor_zenengine_new() != 62598) {
+    if (uniffi_zen_uniffi_checksum_constructor_zenengine_new() != 1618) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_zen_uniffi_checksum_constructor_zenexpression_compile() != 36953) {
@@ -2548,12 +3022,9 @@ private let initializationResult: InitializationResult = {
     if (uniffi_zen_uniffi_checksum_method_zencustomnodecallback_handle() != 54882) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_zen_uniffi_checksum_method_zendecisionloadercallback_load() != 42929) {
-        return InitializationResult.apiChecksumMismatch
-    }
 
-    uniffiCallbackInitZenCustomNodeCallback()
     uniffiCallbackInitZenDecisionLoaderCallback()
+    uniffiCallbackInitZenCustomNodeCallback()
     return InitializationResult.ok
 }()
 
