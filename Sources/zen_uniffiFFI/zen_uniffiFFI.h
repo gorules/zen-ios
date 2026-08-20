@@ -50,9 +50,9 @@ typedef void (*UniffiRustFutureContinuationCallback)(uint64_t, int8_t
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_FREE
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_FREE
-typedef void (*UniffiForeignFutureFree)(uint64_t
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_DROPPED_CALLBACK
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_DROPPED_CALLBACK
+typedef void (*UniffiForeignFutureDroppedCallback)(uint64_t
     );
 
 #endif
@@ -62,311 +62,330 @@ typedef void (*UniffiCallbackInterfaceFree)(uint64_t
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE
-typedef struct UniffiForeignFuture {
-    uint64_t handle;
-    UniffiForeignFutureFree _Nonnull free;
-} UniffiForeignFuture;
+#ifndef UNIFFI_FFIDEF_CALLBACK_INTERFACE_CLONE
+#define UNIFFI_FFIDEF_CALLBACK_INTERFACE_CLONE
+typedef uint64_t (*UniffiCallbackInterfaceClone)(uint64_t
+    );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U8
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U8
-typedef struct UniffiForeignFutureStructU8 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_DROPPED_CALLBACK_STRUCT
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_DROPPED_CALLBACK_STRUCT
+typedef struct UniffiForeignFutureDroppedCallbackStruct {
+    uint64_t handle;
+    UniffiForeignFutureDroppedCallback _Nonnull free;
+} UniffiForeignFutureDroppedCallbackStruct;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_U8
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_U8
+typedef struct UniffiForeignFutureResultU8 {
     uint8_t returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructU8;
+} UniffiForeignFutureResultU8;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U8
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U8
-typedef void (*UniffiForeignFutureCompleteU8)(uint64_t, UniffiForeignFutureStructU8
+typedef void (*UniffiForeignFutureCompleteU8)(uint64_t, UniffiForeignFutureResultU8
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I8
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I8
-typedef struct UniffiForeignFutureStructI8 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_I8
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_I8
+typedef struct UniffiForeignFutureResultI8 {
     int8_t returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructI8;
+} UniffiForeignFutureResultI8;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I8
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I8
-typedef void (*UniffiForeignFutureCompleteI8)(uint64_t, UniffiForeignFutureStructI8
+typedef void (*UniffiForeignFutureCompleteI8)(uint64_t, UniffiForeignFutureResultI8
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U16
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U16
-typedef struct UniffiForeignFutureStructU16 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_U16
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_U16
+typedef struct UniffiForeignFutureResultU16 {
     uint16_t returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructU16;
+} UniffiForeignFutureResultU16;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U16
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U16
-typedef void (*UniffiForeignFutureCompleteU16)(uint64_t, UniffiForeignFutureStructU16
+typedef void (*UniffiForeignFutureCompleteU16)(uint64_t, UniffiForeignFutureResultU16
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I16
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I16
-typedef struct UniffiForeignFutureStructI16 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_I16
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_I16
+typedef struct UniffiForeignFutureResultI16 {
     int16_t returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructI16;
+} UniffiForeignFutureResultI16;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I16
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I16
-typedef void (*UniffiForeignFutureCompleteI16)(uint64_t, UniffiForeignFutureStructI16
+typedef void (*UniffiForeignFutureCompleteI16)(uint64_t, UniffiForeignFutureResultI16
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U32
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U32
-typedef struct UniffiForeignFutureStructU32 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_U32
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_U32
+typedef struct UniffiForeignFutureResultU32 {
     uint32_t returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructU32;
+} UniffiForeignFutureResultU32;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U32
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U32
-typedef void (*UniffiForeignFutureCompleteU32)(uint64_t, UniffiForeignFutureStructU32
+typedef void (*UniffiForeignFutureCompleteU32)(uint64_t, UniffiForeignFutureResultU32
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I32
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I32
-typedef struct UniffiForeignFutureStructI32 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_I32
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_I32
+typedef struct UniffiForeignFutureResultI32 {
     int32_t returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructI32;
+} UniffiForeignFutureResultI32;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I32
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I32
-typedef void (*UniffiForeignFutureCompleteI32)(uint64_t, UniffiForeignFutureStructI32
+typedef void (*UniffiForeignFutureCompleteI32)(uint64_t, UniffiForeignFutureResultI32
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U64
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U64
-typedef struct UniffiForeignFutureStructU64 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_U64
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_U64
+typedef struct UniffiForeignFutureResultU64 {
     uint64_t returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructU64;
+} UniffiForeignFutureResultU64;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U64
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U64
-typedef void (*UniffiForeignFutureCompleteU64)(uint64_t, UniffiForeignFutureStructU64
+typedef void (*UniffiForeignFutureCompleteU64)(uint64_t, UniffiForeignFutureResultU64
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I64
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I64
-typedef struct UniffiForeignFutureStructI64 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_I64
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_I64
+typedef struct UniffiForeignFutureResultI64 {
     int64_t returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructI64;
+} UniffiForeignFutureResultI64;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I64
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I64
-typedef void (*UniffiForeignFutureCompleteI64)(uint64_t, UniffiForeignFutureStructI64
+typedef void (*UniffiForeignFutureCompleteI64)(uint64_t, UniffiForeignFutureResultI64
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F32
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F32
-typedef struct UniffiForeignFutureStructF32 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_F32
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_F32
+typedef struct UniffiForeignFutureResultF32 {
     float returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructF32;
+} UniffiForeignFutureResultF32;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_F32
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_F32
-typedef void (*UniffiForeignFutureCompleteF32)(uint64_t, UniffiForeignFutureStructF32
+typedef void (*UniffiForeignFutureCompleteF32)(uint64_t, UniffiForeignFutureResultF32
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F64
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F64
-typedef struct UniffiForeignFutureStructF64 {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_F64
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_F64
+typedef struct UniffiForeignFutureResultF64 {
     double returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructF64;
+} UniffiForeignFutureResultF64;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_F64
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_F64
-typedef void (*UniffiForeignFutureCompleteF64)(uint64_t, UniffiForeignFutureStructF64
+typedef void (*UniffiForeignFutureCompleteF64)(uint64_t, UniffiForeignFutureResultF64
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_POINTER
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_POINTER
-typedef struct UniffiForeignFutureStructPointer {
-    void*_Nonnull returnValue;
-    RustCallStatus callStatus;
-} UniffiForeignFutureStructPointer;
-
-#endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_POINTER
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_POINTER
-typedef void (*UniffiForeignFutureCompletePointer)(uint64_t, UniffiForeignFutureStructPointer
-    );
-
-#endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_RUST_BUFFER
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_RUST_BUFFER
-typedef struct UniffiForeignFutureStructRustBuffer {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_RUST_BUFFER
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_RUST_BUFFER
+typedef struct UniffiForeignFutureResultRustBuffer {
     RustBuffer returnValue;
     RustCallStatus callStatus;
-} UniffiForeignFutureStructRustBuffer;
+} UniffiForeignFutureResultRustBuffer;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_RUST_BUFFER
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_RUST_BUFFER
-typedef void (*UniffiForeignFutureCompleteRustBuffer)(uint64_t, UniffiForeignFutureStructRustBuffer
+typedef void (*UniffiForeignFutureCompleteRustBuffer)(uint64_t, UniffiForeignFutureResultRustBuffer
     );
 
 #endif
-#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_VOID
-#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_VOID
-typedef struct UniffiForeignFutureStructVoid {
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_VOID
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_RESULT_VOID
+typedef struct UniffiForeignFutureResultVoid {
     RustCallStatus callStatus;
-} UniffiForeignFutureStructVoid;
+} UniffiForeignFutureResultVoid;
 
 #endif
 #ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_VOID
 #define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_VOID
-typedef void (*UniffiForeignFutureCompleteVoid)(uint64_t, UniffiForeignFutureStructVoid
+typedef void (*UniffiForeignFutureCompleteVoid)(uint64_t, UniffiForeignFutureResultVoid
     );
 
 #endif
 #ifndef UNIFFI_FFIDEF_CALLBACK_INTERFACE_ZEN_CUSTOM_NODE_CALLBACK_METHOD0
 #define UNIFFI_FFIDEF_CALLBACK_INTERFACE_ZEN_CUSTOM_NODE_CALLBACK_METHOD0
-typedef void (*UniffiCallbackInterfaceZenCustomNodeCallbackMethod0)(uint64_t, RustBuffer, UniffiForeignFutureCompleteRustBuffer _Nonnull, uint64_t, UniffiForeignFuture* _Nonnull
+typedef void (*UniffiCallbackInterfaceZenCustomNodeCallbackMethod0)(uint64_t, RustBuffer, UniffiForeignFutureCompleteRustBuffer _Nonnull, uint64_t, UniffiForeignFutureDroppedCallbackStruct* _Nonnull
     );
 
 #endif
 #ifndef UNIFFI_FFIDEF_CALLBACK_INTERFACE_ZEN_DECISION_LOADER_CALLBACK_METHOD0
 #define UNIFFI_FFIDEF_CALLBACK_INTERFACE_ZEN_DECISION_LOADER_CALLBACK_METHOD0
-typedef void (*UniffiCallbackInterfaceZenDecisionLoaderCallbackMethod0)(uint64_t, RustBuffer, UniffiForeignFutureCompleteRustBuffer _Nonnull, uint64_t, UniffiForeignFuture* _Nonnull
+typedef void (*UniffiCallbackInterfaceZenDecisionLoaderCallbackMethod0)(uint64_t, RustBuffer, UniffiForeignFutureCompleteRustBuffer _Nonnull, uint64_t, UniffiForeignFutureDroppedCallbackStruct* _Nonnull
     );
 
 #endif
 #ifndef UNIFFI_FFIDEF_V_TABLE_CALLBACK_INTERFACE_ZEN_CUSTOM_NODE_CALLBACK
 #define UNIFFI_FFIDEF_V_TABLE_CALLBACK_INTERFACE_ZEN_CUSTOM_NODE_CALLBACK
 typedef struct UniffiVTableCallbackInterfaceZenCustomNodeCallback {
-    UniffiCallbackInterfaceZenCustomNodeCallbackMethod0 _Nonnull handle;
     UniffiCallbackInterfaceFree _Nonnull uniffiFree;
+    UniffiCallbackInterfaceClone _Nonnull uniffiClone;
+    UniffiCallbackInterfaceZenCustomNodeCallbackMethod0 _Nonnull handle;
 } UniffiVTableCallbackInterfaceZenCustomNodeCallback;
 
 #endif
 #ifndef UNIFFI_FFIDEF_V_TABLE_CALLBACK_INTERFACE_ZEN_DECISION_LOADER_CALLBACK
 #define UNIFFI_FFIDEF_V_TABLE_CALLBACK_INTERFACE_ZEN_DECISION_LOADER_CALLBACK
 typedef struct UniffiVTableCallbackInterfaceZenDecisionLoaderCallback {
-    UniffiCallbackInterfaceZenDecisionLoaderCallbackMethod0 _Nonnull load;
     UniffiCallbackInterfaceFree _Nonnull uniffiFree;
+    UniffiCallbackInterfaceClone _Nonnull uniffiClone;
+    UniffiCallbackInterfaceZenDecisionLoaderCallbackMethod0 _Nonnull load;
 } UniffiVTableCallbackInterfaceZenDecisionLoaderCallback;
 
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENDECISION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENDECISION
-void*_Nonnull uniffi_zen_uniffi_fn_clone_zendecision(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+uint64_t uniffi_zen_uniffi_fn_clone_zendecision(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENDECISION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENDECISION
-void uniffi_zen_uniffi_fn_free_zendecision(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+void uniffi_zen_uniffi_fn_free_zendecision(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENDECISION_EVALUATE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENDECISION_EVALUATE
-uint64_t uniffi_zen_uniffi_fn_method_zendecision_evaluate(void*_Nonnull ptr, RustBuffer context, RustBuffer options
+uint64_t uniffi_zen_uniffi_fn_method_zendecision_evaluate(uint64_t ptr, RustBuffer context, RustBuffer options
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENDECISION_VALIDATE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENDECISION_VALIDATE
-void uniffi_zen_uniffi_fn_method_zendecision_validate(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+void uniffi_zen_uniffi_fn_method_zendecision_validate(uint64_t ptr, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENENGINE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENENGINE
-void*_Nonnull uniffi_zen_uniffi_fn_clone_zenengine(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+uint64_t uniffi_zen_uniffi_fn_clone_zenengine(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENENGINE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENENGINE
-void uniffi_zen_uniffi_fn_free_zenengine(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+void uniffi_zen_uniffi_fn_free_zenengine(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CONSTRUCTOR_ZENENGINE_NEW
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CONSTRUCTOR_ZENENGINE_NEW
-void*_Nonnull uniffi_zen_uniffi_fn_constructor_zenengine_new(RustBuffer loader, RustBuffer custom_node, RustCallStatus *_Nonnull out_status
+uint64_t uniffi_zen_uniffi_fn_constructor_zenengine_new(RustBuffer loader, RustBuffer custom_node, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENENGINE_CREATE_DECISION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENENGINE_CREATE_DECISION
-void*_Nonnull uniffi_zen_uniffi_fn_method_zenengine_create_decision(void*_Nonnull ptr, RustBuffer content, RustCallStatus *_Nonnull out_status
+uint64_t uniffi_zen_uniffi_fn_method_zenengine_create_decision(uint64_t ptr, RustBuffer content, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENENGINE_EVALUATE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENENGINE_EVALUATE
-uint64_t uniffi_zen_uniffi_fn_method_zenengine_evaluate(void*_Nonnull ptr, RustBuffer key, RustBuffer context, RustBuffer options
+uint64_t uniffi_zen_uniffi_fn_method_zenengine_evaluate(uint64_t ptr, RustBuffer key, RustBuffer context, RustBuffer options
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENENGINE_EVALUATE_BATCH
+#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENENGINE_EVALUATE_BATCH
+uint64_t uniffi_zen_uniffi_fn_method_zenengine_evaluate_batch(uint64_t ptr, RustBuffer requests, RustBuffer options
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENENGINE_GET_DECISION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENENGINE_GET_DECISION
-uint64_t uniffi_zen_uniffi_fn_method_zenengine_get_decision(void*_Nonnull ptr, RustBuffer key
+uint64_t uniffi_zen_uniffi_fn_method_zenengine_get_decision(uint64_t ptr, RustBuffer key
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENEXPRESSION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENEXPRESSION
-void*_Nonnull uniffi_zen_uniffi_fn_clone_zenexpression(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+uint64_t uniffi_zen_uniffi_fn_clone_zenexpression(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENEXPRESSION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENEXPRESSION
-void uniffi_zen_uniffi_fn_free_zenexpression(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+void uniffi_zen_uniffi_fn_free_zenexpression(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CONSTRUCTOR_ZENEXPRESSION_COMPILE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CONSTRUCTOR_ZENEXPRESSION_COMPILE
-void*_Nonnull uniffi_zen_uniffi_fn_constructor_zenexpression_compile(RustBuffer expression, RustCallStatus *_Nonnull out_status
+uint64_t uniffi_zen_uniffi_fn_constructor_zenexpression_compile(RustBuffer expression, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENEXPRESSION_EVALUATE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENEXPRESSION_EVALUATE
-RustBuffer uniffi_zen_uniffi_fn_method_zenexpression_evaluate(void*_Nonnull ptr, RustBuffer context, RustCallStatus *_Nonnull out_status
+RustBuffer uniffi_zen_uniffi_fn_method_zenexpression_evaluate(uint64_t ptr, RustBuffer context, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENEXPRESSIONUNARY
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENEXPRESSIONUNARY
-void*_Nonnull uniffi_zen_uniffi_fn_clone_zenexpressionunary(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+uint64_t uniffi_zen_uniffi_fn_clone_zenexpressionunary(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENEXPRESSIONUNARY
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENEXPRESSIONUNARY
-void uniffi_zen_uniffi_fn_free_zenexpressionunary(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+void uniffi_zen_uniffi_fn_free_zenexpressionunary(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CONSTRUCTOR_ZENEXPRESSIONUNARY_COMPILE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CONSTRUCTOR_ZENEXPRESSIONUNARY_COMPILE
-void*_Nonnull uniffi_zen_uniffi_fn_constructor_zenexpressionunary_compile(RustBuffer expression, RustCallStatus *_Nonnull out_status
+uint64_t uniffi_zen_uniffi_fn_constructor_zenexpressionunary_compile(RustBuffer expression, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENEXPRESSIONUNARY_EVALUATE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENEXPRESSIONUNARY_EVALUATE
-int8_t uniffi_zen_uniffi_fn_method_zenexpressionunary_evaluate(void*_Nonnull ptr, RustBuffer context, RustCallStatus *_Nonnull out_status
+int8_t uniffi_zen_uniffi_fn_method_zenexpressionunary_evaluate(uint64_t ptr, RustBuffer context, RustCallStatus *_Nonnull out_status
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENDECISIONLOADERCALLBACK
+#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_CLONE_ZENDECISIONLOADERCALLBACK
+uint64_t uniffi_zen_uniffi_fn_clone_zendecisionloadercallback(uint64_t handle, RustCallStatus *_Nonnull out_status
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENDECISIONLOADERCALLBACK
+#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FREE_ZENDECISIONLOADERCALLBACK
+void uniffi_zen_uniffi_fn_free_zendecisionloadercallback(uint64_t handle, RustCallStatus *_Nonnull out_status
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_INIT_CALLBACK_VTABLE_ZENDECISIONLOADERCALLBACK
+#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_INIT_CALLBACK_VTABLE_ZENDECISIONLOADERCALLBACK
+void uniffi_zen_uniffi_fn_init_callback_vtable_zendecisionloadercallback(const UniffiVTableCallbackInterfaceZenDecisionLoaderCallback* _Nonnull vtable
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENDECISIONLOADERCALLBACK_LOAD
+#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_METHOD_ZENDECISIONLOADERCALLBACK_LOAD
+uint64_t uniffi_zen_uniffi_fn_method_zendecisionloadercallback_load(uint64_t ptr, RustBuffer key
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_INIT_CALLBACK_VTABLE_ZENCUSTOMNODECALLBACK
@@ -374,9 +393,9 @@ int8_t uniffi_zen_uniffi_fn_method_zenexpressionunary_evaluate(void*_Nonnull ptr
 void uniffi_zen_uniffi_fn_init_callback_vtable_zencustomnodecallback(const UniffiVTableCallbackInterfaceZenCustomNodeCallback* _Nonnull vtable
 );
 #endif
-#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_INIT_CALLBACK_VTABLE_ZENDECISIONLOADERCALLBACK
-#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_INIT_CALLBACK_VTABLE_ZENDECISIONLOADERCALLBACK
-void uniffi_zen_uniffi_fn_init_callback_vtable_zendecisionloadercallback(const UniffiVTableCallbackInterfaceZenDecisionLoaderCallback* _Nonnull vtable
+#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FUNC_OVERRIDE_CONFIG
+#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FUNC_OVERRIDE_CONFIG
+void uniffi_zen_uniffi_fn_func_override_config(RustBuffer config, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FUNC_EVALUATE_EXPRESSION
@@ -387,11 +406,6 @@ RustBuffer uniffi_zen_uniffi_fn_func_evaluate_expression(RustBuffer expression, 
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FUNC_EVALUATE_UNARY_EXPRESSION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FUNC_EVALUATE_UNARY_EXPRESSION
 int8_t uniffi_zen_uniffi_fn_func_evaluate_unary_expression(RustBuffer expression, RustBuffer context, RustCallStatus *_Nonnull out_status
-);
-#endif
-#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FUNC_OVERRIDE_CONFIG
-#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_FN_FUNC_OVERRIDE_CONFIG
-void uniffi_zen_uniffi_fn_func_override_config(RustBuffer config, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUSTBUFFER_ALLOC
@@ -614,26 +628,6 @@ void ffi_zen_uniffi_rust_future_free_f64(uint64_t handle
 double ffi_zen_uniffi_rust_future_complete_f64(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
-#ifndef UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_POLL_POINTER
-#define UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_POLL_POINTER
-void ffi_zen_uniffi_rust_future_poll_pointer(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
-);
-#endif
-#ifndef UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_CANCEL_POINTER
-#define UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_CANCEL_POINTER
-void ffi_zen_uniffi_rust_future_cancel_pointer(uint64_t handle
-);
-#endif
-#ifndef UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_FREE_POINTER
-#define UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_FREE_POINTER
-void ffi_zen_uniffi_rust_future_free_pointer(uint64_t handle
-);
-#endif
-#ifndef UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_COMPLETE_POINTER
-#define UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_COMPLETE_POINTER
-void*_Nonnull ffi_zen_uniffi_rust_future_complete_pointer(uint64_t handle, RustCallStatus *_Nonnull out_status
-);
-#endif
 #ifndef UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_POLL_RUST_BUFFER
 #define UNIFFI_FFIDEF_FFI_ZEN_UNIFFI_RUST_FUTURE_POLL_RUST_BUFFER
 void ffi_zen_uniffi_rust_future_poll_rust_buffer(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
@@ -674,6 +668,12 @@ void ffi_zen_uniffi_rust_future_free_void(uint64_t handle
 void ffi_zen_uniffi_rust_future_complete_void(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_FUNC_OVERRIDE_CONFIG
+#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_FUNC_OVERRIDE_CONFIG
+uint16_t uniffi_zen_uniffi_checksum_func_override_config(void
+    
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_FUNC_EVALUATE_EXPRESSION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_FUNC_EVALUATE_EXPRESSION
 uint16_t uniffi_zen_uniffi_checksum_func_evaluate_expression(void
@@ -683,12 +683,6 @@ uint16_t uniffi_zen_uniffi_checksum_func_evaluate_expression(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_FUNC_EVALUATE_UNARY_EXPRESSION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_FUNC_EVALUATE_UNARY_EXPRESSION
 uint16_t uniffi_zen_uniffi_checksum_func_evaluate_unary_expression(void
-    
-);
-#endif
-#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_FUNC_OVERRIDE_CONFIG
-#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_FUNC_OVERRIDE_CONFIG
-uint16_t uniffi_zen_uniffi_checksum_func_override_config(void
     
 );
 #endif
@@ -716,6 +710,12 @@ uint16_t uniffi_zen_uniffi_checksum_method_zenengine_evaluate(void
     
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENENGINE_EVALUATE_BATCH
+#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENENGINE_EVALUATE_BATCH
+uint16_t uniffi_zen_uniffi_checksum_method_zenengine_evaluate_batch(void
+    
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENENGINE_GET_DECISION
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENENGINE_GET_DECISION
 uint16_t uniffi_zen_uniffi_checksum_method_zenengine_get_decision(void
@@ -731,6 +731,12 @@ uint16_t uniffi_zen_uniffi_checksum_method_zenexpression_evaluate(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENEXPRESSIONUNARY_EVALUATE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENEXPRESSIONUNARY_EVALUATE
 uint16_t uniffi_zen_uniffi_checksum_method_zenexpressionunary_evaluate(void
+    
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENDECISIONLOADERCALLBACK_LOAD
+#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENDECISIONLOADERCALLBACK_LOAD
+uint16_t uniffi_zen_uniffi_checksum_method_zendecisionloadercallback_load(void
     
 );
 #endif
@@ -755,12 +761,6 @@ uint16_t uniffi_zen_uniffi_checksum_constructor_zenexpressionunary_compile(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENCUSTOMNODECALLBACK_HANDLE
 #define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENCUSTOMNODECALLBACK_HANDLE
 uint16_t uniffi_zen_uniffi_checksum_method_zencustomnodecallback_handle(void
-    
-);
-#endif
-#ifndef UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENDECISIONLOADERCALLBACK_LOAD
-#define UNIFFI_FFIDEF_UNIFFI_ZEN_UNIFFI_CHECKSUM_METHOD_ZENDECISIONLOADERCALLBACK_LOAD
-uint16_t uniffi_zen_uniffi_checksum_method_zendecisionloadercallback_load(void
     
 );
 #endif
