@@ -1,27 +1,36 @@
-# Zen iOS Package (WIP)
+# Swift Rules Engine for iOS
 
-A Swift package for integrating Zen rules engine into iOS applications.
+**Business logic humans can read and machines can run.** One copy of your rules: the owner reads it, every system runs it.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+<img width="1280" alt="GoRules ZEN Engine" src="https://raw.githubusercontent.com/gorules/zen/master/.github/images/hero.png">
+
+ZEN Engine is a cross-platform, open-source [Business Rules Engine (BRE)](https://gorules.io) written in **Rust**, packaged here as a **Swift** package with a precompiled XCFramework for **iOS**. Decisions evaluate in microseconds, on-device and offline-capable, and are stored as portable JSON that runs identically on every platform: the same rules power Node.js, Python, Go, Java, Kotlin and .NET backends.
+
+Try it in the free [Online Editor](https://editor.gorules.io) with a built-in simulator, or embed the open-source React [JDM Editor](https://github.com/gorules/jdm-editor) in your own product. Learn more about the [Swift rules engine](https://gorules.io/open-source/swift-rules-engine) on the GoRules website.
+
+## Rules that read like sentences
+
+Conditions are written the way the business says them, in the ZEN Expression Language. The developer view is one toggle away, and the two can never drift apart: there is only one source of truth, and this engine runs it.
+
+<img width="1280" alt="Readable rules" src="https://raw.githubusercontent.com/gorules/zen/master/.github/images/tables.png">
+
+## Rules as graphs, or as documents
+
+Model a decision on a visual canvas of decision tables, switches, expressions, functions and reusable sub-decisions. Or write it as a policy document with prose, typed data models and tables. Both compile to the same engine and return the same answers.
+
+<img width="1280" alt="Graphs and documents" src="https://raw.githubusercontent.com/gorules/zen/master/.github/images/graphs-docs.png">
+
+To go deeper, see the [iOS SDK documentation](https://docs.gorules.io/developers/sdks/ios), the [decision graph guide](https://docs.gorules.io/learn/authoring/decision-graphs) and the [ZEN Expression Language](https://docs.gorules.io/learn/zen-language/syntax) reference.
 
 ## Installation
 
-### Swift Package Manager
-
-Add the package to your project using Xcode:
-
-1. Open your project in Xcode
-2. Go to **File → Add Package Dependencies...**
-3. Enter the repository URL:
-   ```
-   https://github.com/gorules/zen-ios
-   ```
-4. Select the version you want to use
-5. Click **Add Package**
-
-Or add it to your `Package.swift` file:
+Add the package in Xcode via **File → Add Package Dependencies...** with the repository URL `https://github.com/gorules/zen-ios`, or in `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/gorules/zen-ios", from: "0.0.9")
+    .package(url: "https://github.com/gorules/zen-ios", from: "2.0.0")
 ]
 ```
 
@@ -36,265 +45,99 @@ Then add `ZenUniffi` to your target dependencies:
 )
 ```
 
-## Usage
-
-### Import the Package
-
-```swift
-import ZenUniffi
-```
-
-### Evaluate Simple Expressions
-
-```swift
-// Evaluate a simple expression
-let expression = "2 + 2"
-let context: JsonBuffer? = nil
-let result = try evaluateExpression(expression: expression, context: context)
-
-// Convert result to string
-if let resultString = String(data: result, encoding: .utf8) {
-    print("Result: \(resultString)")
-}
-```
-
-### Create and Use Decision Engine
-
-```swift
-// Create engine instance
-let loader: ZenDecisionLoaderCallback? = nil
-let customNode: ZenCustomNodeCallback? = nil
-let engine = ZenEngine(loader: loader, customNode: customNode)
-
-// Define your decision JSON
-let decisionJson = """
-{
-  "nodes": [
-    {
-      "type": "inputNode",
-      "content": {
-        "schema": ""
-      },
-      "id": "e80a9ddd-2f6b-4a24-9822-b0931a47944d",
-      "name": "request",
-      "position": {
-        "x": 450,
-        "y": 275
-      }
-    },
-    {
-      "type": "decisionTableNode",
-      "content": {
-        "hitPolicy": "first",
-        "rules": [
-          {
-            "_id": "c5844d99-af9a-48e8-9146-3cfc396e84ff",
-            "aa52b906-c849-40e0-94b7-d89e69e91445": "age > 20",
-            "7358a39f-5d6a-4e97-9566-fa207cedd99a": "true"
-          },
-          {
-            "_id": "cb0559cd-4e49-41b5-9994-eacccb6a4f69",
-            "aa52b906-c849-40e0-94b7-d89e69e91445": "",
-            "7358a39f-5d6a-4e97-9566-fa207cedd99a": "false"
-          }
-        ],
-        "inputs": [
-          {
-            "id": "aa52b906-c849-40e0-94b7-d89e69e91445",
-            "name": "Input"
-          }
-        ],
-        "outputs": [
-          {
-            "id": "7358a39f-5d6a-4e97-9566-fa207cedd99a",
-            "name": "Output",
-            "field": "output"
-          }
-        ],
-        "passThrough": true,
-        "inputField": null,
-        "outputPath": null,
-        "executionMode": "single",
-        "passThorough": false
-      },
-      "id": "5700f66f-698e-4b5c-bd5f-15086eb67c9c",
-      "name": "decisionTable1",
-      "position": {
-        "x": 765,
-        "y": 275
-      }
-    }
-  ],
-  "edges": [
-    {
-      "id": "f9cc7d2d-88df-497e-9f74-699d3fcc56dc",
-      "sourceId": "e80a9ddd-2f6b-4a24-9822-b0931a47944d",
-      "type": "edge",
-      "targetId": "5700f66f-698e-4b5c-bd5f-15086eb67c9c"
-    }
-  ]
-}
-"""
-
-// Define context
-let contextJson = #"{"age": 21}"#
-
-// Convert to Data
-guard let decisionData = decisionJson.data(using: .utf8),
-      let contextData = contextJson.data(using: .utf8) else {
-    throw NSError(domain: "ZenError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert JSON"])
-}
-
-// Create decision
-let decision = try engine.createDecision(content: decisionData)
-
-// Evaluate decision
-let result = try await decision.evaluate(
-    context: contextData,
-    options: nil
-)
-
-// Access results
-if let resultString = String(data: result.result, encoding: .utf8) {
-    print("Decision result: \(resultString)")
-}
-print("Performance: \(result.performance)")
-```
-
-
-## Advanced Usage
-
-### Caching Decisions with a Loader
-
-For better performance, you can cache decisions in a HashMap and load them on demand. This is useful when you need to load decision models from remote storage or files.
-
-#### Step 1: Pre-load and Cache Decisions
+## Quickstart
 
 ```swift
 import ZenUniffi
 
-class DecisionManager {
-    private let engine: ZenEngine
-    private var decisionCache: [String: ZenDecision] = [:]
-    
-    init() {
-        // Create engine with a loader callback
-        let loader: ZenDecisionLoaderCallback = { [weak self] key in
-            // Return cached decision for the given key
-            return self?.decisionCache[key]
-        }
-        
-        self.engine = ZenEngine(loader: loader, customNode: nil)
+Task {
+    guard let ruleData = Bundle.main.url(forResource: "pricing", withExtension: "json")
+        .flatMap({ try? Data(contentsOf: $0) }) else {
+        return
     }
-    
-    /// Load decision from remote storage and cache it
-    func loadAndCacheDecision(path: String, content: Data) throws {
-        // Create decision from JSON content
-        let decision = try engine.createDecision(content: content)
-        
-        // Cache it with the path as key
-        decisionCache[path] = decision
-        
-        print("✅ Cached decision at path: \(path)")
-    }
-    
-    /// Load multiple decisions from remote storage (e.g., downloaded as a zip file)
-    func loadDecisionsFromRemote() async throws {
-        // Step 1: Download zip file from remote server
-        // let zipData = try await downloadDecisionsZip(from: "https://api.example.com/decisions.zip")
-        
-        // Step 2: Extract zip file
-        // let extractedFiles = try extractZipFile(zipData)
-        
-        // Step 3: Load each decision file and cache it
-        // Pseudo code for processing extracted files:
-        /*
-        for (filePath, fileContent) in extractedFiles {
-            // filePath example: "rules/age-verification.json"
-            // fileContent is the JSON Data
-            try loadAndCacheDecision(path: filePath, content: fileContent)
+
+    let engine = try ZenEngine(loader: nil, customNode: nil)
+    let decision = try engine.createDecision(content: ruleData)
+
+    let input = """
+        {
+            "customer": { "tier": "gold", "yearsActive": 3 },
+            "order": { "subtotal": 150, "items": 5 }
         }
-        */
-        
-        // Example with mock data:
-        let mockDecisions: [(String, Data)] = [
-            ("rules/age-verification", """
-                {
-                  "contentType": "application/vnd.gorules.decision",
-                  "nodes": [...],
-                  "edges": [...]
-                }
-                """.data(using: .utf8)!),
-            ("rules/pricing", """
-                {
-                  "contentType": "application/vnd.gorules.decision",
-                  "nodes": [...],
-                  "edges": [...]
-                }
-                """.data(using: .utf8)!),
-            ("rules/eligibility", """
-                {
-                  "contentType": "application/vnd.gorules.decision",
-                  "nodes": [...],
-                  "edges": [...]
-                }
-                """.data(using: .utf8)!)
-        ]
-        
-        for (path, content) in mockDecisions {
-            try loadAndCacheDecision(path: path, content: content)
-        }
-    }
-    
-    /// Evaluate a decision by its path
-    func evaluate(path: String, context: Data) async throws -> ZenDecisionResult {
-        guard let decision = decisionCache[path] else {
-            throw NSError(domain: "DecisionManager", code: 404, 
-                         userInfo: [NSLocalizedDescriptionKey: "Decision not found: \(path)"])
-        }
-        
-        return try await decision.evaluate(context: context, options: nil)
+    """.data(using: .utf8)!
+
+    let response = try await decision.evaluate(context: input, options: nil)
+
+    if let resultString = String(data: response.result, encoding: .utf8) {
+        print(resultString)
+        // => {"discount":0.15,"freeShipping":true}
     }
 }
 ```
 
-#### Step 2: Use the Decision Manager
+### Loaders
+
+`ZenEngine` accepts an optional `ZenLoader` that serves decisions by key. Use the `static`, `filesystem`, or `zip` variants for common backends, or `callback` for custom loading logic. With a configuration, decisions are pre-loaded and pre-compiled at engine creation for faster evaluations.
 
 ```swift
-// Initialize manager
-let manager = DecisionManager()
+import ZenUniffi
+import Foundation
 
-// Load all decisions on app startup
-Task {
-    try await manager.loadDecisionsFromRemote()
-}
+func createEngine() throws -> ZenEngine {
+    let url = Bundle.main.url(forResource: "pricing", withExtension: "json")!
+    let pricing = try Data(contentsOf: url)
 
-// Later, evaluate a specific decision
-Task {
-    let contextJson = #"{"age": 25}"#
-    guard let contextData = contextJson.data(using: .utf8) else { return }
-    
-    let result = try await manager.evaluate(
-        path: "rules/age-verification",
-        context: contextData
-    )
-    
-    if let resultString = String(data: result.result, encoding: .utf8) {
-        print("Result: \(resultString)")
-    }
+    let loader = ZenLoader.static(content: ["pricing.json": pricing])
+    return try ZenEngine(loader: loader, customNode: nil)
 }
 ```
+
+Full guides, including filesystem and zip loaders, tracing and expression evaluation, are in the [iOS SDK documentation](https://docs.gorules.io/developers/sdks/ios).
+
+## Other platforms
+
+* **Node.js** - [GitHub](https://github.com/gorules/zen/tree/master/bindings/nodejs) | [Documentation](https://docs.gorules.io/developers/sdks/nodejs) | [npm](https://www.npmjs.com/package/@gorules/zen-engine)
+* **Python** - [GitHub](https://github.com/gorules/zen/tree/master/bindings/python) | [Documentation](https://docs.gorules.io/developers/sdks/python) | [PyPI](https://pypi.org/project/zen-engine/)
+* **Go** - [GitHub](https://github.com/gorules/zen-go) | [Documentation](https://docs.gorules.io/developers/sdks/go)
+* **Java / Kotlin / Android** - [GitHub](https://github.com/gorules/zen/tree/master/bindings/uniffi) | [Documentation](https://docs.gorules.io/developers/sdks/java) | [Maven Central](https://central.sonatype.com/artifact/io.gorules/zen-engine)
+* **.NET** - [GitHub](https://github.com/gorules/zen/tree/master/bindings/uniffi) | [Documentation](https://docs.gorules.io/developers/sdks/csharp) | [NuGet](https://www.nuget.org/packages/GoRules.ZenEngine)
+* **Rust (Core)** - [GitHub](https://github.com/gorules/zen) | [Documentation](https://docs.gorules.io/developers/sdks/rust) | [crates.io](https://crates.io/crates/zen-engine)
+
+## The GoRules platform
+
+The engine is open at the core; [GoRules](https://gorules.io) is the platform around it. Managed cloud, self-hosted, or embedded with no network hop. SOC 2 Type II.
+
+### AI that builds rules, and stays reviewable
+
+An AI copilot and MCP server that edits rules, runs tests and explains decisions. It never deploys. Releases stay with your reviewers.
+
+<img width="800" alt="GoRules AI" src="https://raw.githubusercontent.com/gorules/zen/master/.github/images/ai.png">
+
+### Promote like a release, run like a binary
+
+A release moves from testing to staging to production untouched. Approvals, instant rollback, and a paper trail for every change.
+
+<img width="800" alt="Governance" src="https://raw.githubusercontent.com/gorules/zen/master/.github/images/governance.png">
+
+### Prove it before it ships
+
+Scenario suites run on every change, coverage is measured against decision paths, and every answer comes with a replayable trace.
+
+<img width="800" alt="Testing" src="https://raw.githubusercontent.com/gorules/zen/master/.github/images/tests.png">
 
 ## Requirements
 
 - iOS 16.0+
-- Xcode 14.0+
 - Swift 5.9+
+
+## Contribution
+
+The JDM standard is growing and we need to keep tight control over its development and roadmap, as a number of companies use GoRules ZEN Engine and GoRules BRMS. For this reason we can't accept code contributions at this moment, apart from help with documentation and additional tests.
 
 ## License
 
-MIT: See the LICENSE file for details.
+[MIT License](https://opensource.org/licenses/MIT)
 
 ## Support
 
-For issues and questions, please visit: https://github.com/gorules/zen-ios/issues
+For issues and questions, please visit [github.com/gorules/zen-ios/issues](https://github.com/gorules/zen-ios/issues).
